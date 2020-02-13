@@ -8,16 +8,9 @@ This event driven function converts a text file to PDF. Once you drop a `text` f
 
 ## Pre-requisites
 
-- Start by cloning this repository
-- [Create input and output buckets in Oracle Cloud Infrastructure Object Storage](https://docs.cloud.oracle.com/iaas/Content/Object/Tasks/managingbuckets.htm#usingconsole)
 - Collect the following information for you OCI tenancy (you'll need these in subsequent steps) - Tenancy OCID, User OCID of a user in the tenancy, OCI private key, OCI public key passphrase, OCI region
-- Copy your OCI private key to folder. If you don't already have one, [please follow the documentation](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm#How)
+- Copy your OCI private key to this folder. If you don't already have one, [please follow the documentation](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm#How)
 
-
-### Switch to correct context
-
-- `fn use context <your context name>`
-- Check using `fn ls apps`
 
 ## Create application
 
@@ -29,24 +22,18 @@ e.g.
 
 `fn create app text2pdf --annotation oracle.com/oci/subnetIds='["ocid1.subnet.oc1.phx.aaaaaaaaghmsma7mpqhqdhbgnby25u2zo4wqlrrcskvu7jg56dryxt3hgvka"]' --config TENANT_OCID=ocid1.tenancy.oc1..aaaaaaaaydrjm77otncda2xn7qtv7l3hqnd3zxn2u6siwdhniibwfv4wwhta --config USER_OCID=ocid1.user.oc1..aaaaaaaavz5efq7jwjjipbvm536plgylg7rfr53obvtghpi2vbg3qyrnrtfa --config FINGERPRINT=41:82:5f:44:ca:a1:2e:58:d2:63:6a:af:52:d5:3d:04 --config PASSPHRASE=4242 --config REGION=us-phoenix-1 --config PRIVATE_KEY_NAME=oci_private_key.pem --config OUTPUT_BUCKET=output-bucket`
 
-### Check
-
-`fn inspect app text2pdf`
-
 ## Deploy the application
 
 - `cd fn-text2pdf` 
 - `fn -v deploy --app text2pdf --build-arg PRIVATE_KEY_NAME=<private_key_name>` e.g. `fn -v deploy --app text2pdf --build-arg PRIVATE_KEY_NAME=oci_private_key.pem`
 
-## Create Events rule
+## Obtain the function OCID
 
-### Before that...
-
-... find the function OCID (use the command below) and replace it in `actions.json` file
+Let's find the function OCID (use the command below) and replace it in `actions.json` file
 
 `fn inspect fn text2pdf convert | jq '.id' | sed -e 's/^"//' -e 's/"$//'`
 
-Go ahead and create the rule... 
+Let's create the rule using OCI CLI
 
 `oci --profile <oci-config-profile-name> cloud-events rule create --display-name <display-name> --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"<bucket-name>"}}' --compartment-id <compartment-ocid> --actions file://<filename>.json`
 
