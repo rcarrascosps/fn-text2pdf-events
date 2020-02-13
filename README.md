@@ -43,7 +43,7 @@ Replace `<bucket-name>` with the (input) Object Storage bucket name where you wi
 
 e.g.
 
-`oci --profile devrel cloud-events rule create --display-name t2prule --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"test"}}' --compartment-id ocid1.compartment.oc1..aaaaaaaaokbzj2jn3hf5kwdwqoxl2dq7u54p3tsmxrjd7s3uu7x23tkegiua --actions file://actions.json`
+`oci events rule create --display-name t2prule --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"test"}}' --compartment-id ocid1.compartment.oc1..aaaaaaaaokbzj2jn3hf5kwdwqoxl2dq7u54p3tsmxrjd7s3uu7x23tkegiua --actions file://actions.json`
 
 
 ## Test
