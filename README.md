@@ -33,6 +33,8 @@ Let's find the function OCID (use the command below) and replace it in `actions.
 
 `fn inspect fn text2pdf convert | jq '.id' | sed -e 's/^"//' -e 's/"$//'`
 
+## Create the rule using OCI CLI
+
 Let's create the rule using OCI CLI
 
 `oci --profile <oci-config-profile-name> cloud-events rule create --display-name <display-name> --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"<bucket-name>"}}' --compartment-id <compartment-ocid> --actions file://<filename>.json`
