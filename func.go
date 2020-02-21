@@ -29,7 +29,7 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	log.Println("Got OCI event", evt)
 	log.Println("Got Casper details", evt.Data)
 
-	fileName := evt.Data.ObjectDisplayName
+	fileName := evt.Data.ResourceName
 	log.Println("File name", fileName)
 	extension := strings.Split(fileName, ".")[1]
 
@@ -38,8 +38,8 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 		return
 	}
 
-	namespace := evt.Data.Namespace
-	bucketName := evt.Data.BucketName
+	namespace := evt.Data.AdditionalDetails.Namespace
+	bucketName := evt.Data.AdditionalDetails.BucketName
 
 	log.Println("Storage Bucket namespace ", namespace)
 	log.Println("Input storage Bucket name ", bucketName)
@@ -181,7 +181,7 @@ type OCIEvent struct {
 	EventTime          string `json:"eventTime"`
 	SchemaURL          string `json:"schemaURL"`
 	ContentType        string `json:"contentType"`
-	Extensions         `json:"extensions"`
+	Extensions         Extensions `json:"extensions"`
 	Data               Data `json:"data"`
 }
 
@@ -192,12 +192,19 @@ type Extensions struct {
 
 //Data - represents Casper data
 type Data struct {
-	Namespace          string `json:"namespace"`
-	ObjectDisplayName  string `json:"displayName"`
-	ETag               string `json:"eTag"`
-	BucketID           string `json:"bucketId"`
-	BucketName         string `json:"bucketName"`
-	BucketFreeFormTags string `json:"bucketFreeformTags"`
-	BucketDefinedTags  string `json:"bucketDefinedTags"`
-	ArchivalState      string `json:"archivalState"`
+	CompartmentId       string `json:"compartmentId"`
+	CompartmentName  	string `json:"compartmentName"`
+	ResourceName        string `json:"resourceName"`
+	ResourceId          string `json:"resourceId"`
+	AvailabilityDomain  string `json:"availabilityDomain"`
+	AdditionalDetails 	AdditionalDetails `json:"additionalDetails"`
+}
+
+//AdditionalDetails
+type AdditionalDetails struct {
+	BucketName		string	`json:"bucketName"`
+	ArchivalState	string	`json:"archivalState"`
+	Namespace		string	`json:"namespace"`
+	BucketId		string	`json:"bucketId"`
+	ETag			string	`json:"eTag"`
 }
